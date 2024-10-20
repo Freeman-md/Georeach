@@ -1,4 +1,5 @@
-@using Microsoft.AspNetCore.Components.QuickGrid
+@inherits EventsListBase
+@attribute [StreamRendering]
 
 <section id="events" class="rounded-lg border py-4 space-y-4">
 
@@ -46,7 +47,11 @@
             </thead>
 
             <tbody>
-                @for(int i = 0; i < events.Count; i++) {
+                @if(events == null) {
+                    <p class="text-center"><em>Loading...</em></p>
+                } else {
+                    @for (int i = 0; i < events.Count; i++)
+                {
                     <tr>
                         <td class="px-4 py-2.5">@events[i].Title</td>
                         <td class="px-4 py-2.5">@events[i].Date.ToLongDateString()</td>
@@ -57,24 +62,9 @@
                         </td>
                     </tr>
                 }
+                }
             </tbody>
         </table>
     </div>
 
 </section>
-
-
-@code {
-    private PaginationState state = new PaginationState { ItemsPerPage = 1 };
-    private record Event(string Title, DateTime Date, string Description, string Location, RenderFragment TicketLink);
-
-    private List<Event> events => new List<Event>
-{
-new Event("Art Exhibition", DateTime.Parse("2023-11-10"), "A display of modern art.", "New York, NY",
-builder => builder.AddMarkupContent(0, "<a href=\"#\" class=\"text-blue-500\">Buy</a>")),
-new Event("Food Festival", DateTime.Parse("2023-11-15"), "A day of gourmet food.", "San Francisco, CA",
-builder => builder.AddMarkupContent(0, "<a href=\"#\" class=\"text-blue-500\">Buy</a>")),
-new Event("Tech Conference", DateTime.Parse("2023-11-20"), "Exploring the latest in tech.", "Austin, TX",
-builder => builder.AddMarkupContent(0, "<a href=\"#\" class=\"text-blue-500\">Buy</a>")),
-};
-}
