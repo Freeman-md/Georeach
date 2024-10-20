@@ -4,10 +4,9 @@ namespace Georeach.Components;
 
 public record Event(string Title, DateTime Date, string Description, string Location);
 
-public class EventsListBase : ComponentBase
+public partial class EventsList : ComponentBase
 {
-
-    public List<Event> events { get; set; }
+    public List<Event>? events { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

@@ -1,44 +1,61 @@
+@attribute [StreamRendering]
+
 <section id="weather-display" class="space-y-6">
     <h2 class="text-3xl">Weather Summary for {location}</h2>
 
-    <article class="grid grid-cols-2 lg:grid-cols-3 gap-4">
-        <div class="border rounded-lg p-4 grid place-items-center text-center">
-            <img src="https://cdn.weatherapi.com/weather/64x64/day/113.png" alt="Sunny" class="w-20">
-            <h4 class="text-3xl font-bold" id="weather-in-celsius">72&deg;F</h4>
-            <p class="text-gray-500">Sunny with light clouds</p>
-        </div>
+    @if (weatherData == null)
+    {
+        <tr>
+            <td colspan="6">
+                <dotlottie-player id="loading"
+                    src="https://lottie.host/99fc7254-b101-4ccc-aeb8-15324d0da43d/eTSRfKxcni.json" background="transparent"
+                    speed="1" style="width: 300px; height: 300px;" loop autoplay class="mx-auto"></dotlottie-player>
+            </td>
+        </tr>
+    }
+    else
+    {
 
-        <div class="border rounded-lg p-4 grid place-items-center">
-            <div>
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-tornado" width="30"
-                    height="30" viewBox="0 0 30 30" stroke-width="1.5" stroke="#2c3e50" fill="none"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <path d="M21 4l-18 0" />
-                    <path d="M13 16l-6 0" />
-                    <path d="M11 20l4 0" />
-                    <path d="M6 8l14 0" />
-                    <path d="M4 12l12 0" />
-                </svg>
-                <p class="text-gray-500">Humidity</p>
-                <h4 class="text-3xl font-bold" id="humidity">45%</h4>
+        <article class="grid grid-cols-2 lg:grid-cols-3 gap-4">
+            <div id="temperature-container" class="border rounded-lg p-4 grid place-items-center text-center">
+                <img src="https://cdn.weatherapi.com/weather/64x64/day/113.png" alt="Sunny" class="w-20">
+                <h4 class="text-3xl font-bold" id="temperature-in-celsius">72&deg;F</h4>
+                <p class="text-gray-500">Sunny with light clouds</p>
             </div>
-        </div>
 
-        <div class="border rounded-lg p-4 grid items-center">
-            <div>
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-wind" width="30" height="30"
-                    viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round"
-                    stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <path d="M5 8h8.5a2.5 2.5 0 1 0 -2.34 -3.24" />
-                    <path d="M3 12h15.5a2.5 2.5 0 1 1 -2.34 3.24" />
-                    <path d="M4 16h5.5a2.5 2.5 0 1 1 -2.34 3.24" />
-                </svg>
-                <p class="text-gray-500">Wind Speed</p>
-                <h4 class="text-3xl font-bold" id="wind-speed-in-mph">5 mph</h4>
-                <p class="text-gray-500">Breezy conditions</p>
+            <div class="border rounded-lg p-4 grid place-items-center">
+                <div id="humidity-container">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-tornado" width="30"
+                        height="30" viewBox="0 0 30 30" stroke-width="1.5" stroke="#2c3e50" fill="none"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M21 4l-18 0" />
+                        <path d="M13 16l-6 0" />
+                        <path d="M11 20l4 0" />
+                        <path d="M6 8l14 0" />
+                        <path d="M4 12l12 0" />
+                    </svg>
+                    <p class="text-gray-500">Humidity</p>
+                    <h4 class="text-3xl font-bold" id="humidity-in-percentage">45%</h4>
+                </div>
             </div>
-        </div>
-    </article>
+
+            <div class="border rounded-lg p-4 grid items-center">
+                <div id="wind-speed-container">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-wind" width="30" height="30"
+                        viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M5 8h8.5a2.5 2.5 0 1 0 -2.34 -3.24" />
+                        <path d="M3 12h15.5a2.5 2.5 0 1 1 -2.34 3.24" />
+                        <path d="M4 16h5.5a2.5 2.5 0 1 1 -2.34 3.24" />
+                    </svg>
+                    <p class="text-gray-500">Wind Speed</p>
+                    <h4 class="text-3xl font-bold" id="wind-speed-in-mph">5 mph</h4>
+                    <p class="text-gray-500">Breezy conditions</p>
+                </div>
+            </div>
+        </article>
+
+    }
 </section>
