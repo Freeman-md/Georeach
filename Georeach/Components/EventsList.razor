@@ -47,21 +47,45 @@
             </thead>
 
             <tbody>
-                @if(events == null) {
-                    <p class="text-center"><em>Loading...</em></p>
-                } else {
-                    @for (int i = 0; i < events.Count; i++)
+                @if (events == null)
                 {
                     <tr>
-                        <td class="px-4 py-2.5">@events[i].Title</td>
-                        <td class="px-4 py-2.5">@events[i].Date.ToLongDateString()</td>
-                        <td class="px-4 py-2.5">@events[i].Description</td>
-                        <td class="px-4 py-2.5">@events[i].Location</td>
-                        <td class="px-4 py-2.5">
-                            <a href="" class="text-primary">Buy</a>
+                        <td colspan="6">
+                            <dotlottie-player id="loading"
+                                src="https://lottie.host/99fc7254-b101-4ccc-aeb8-15324d0da43d/eTSRfKxcni.json"
+                                background="transparent" speed="1" style="width: 300px; height: 300px;" loop autoplay
+                                class="mx-auto"></dotlottie-player>
                         </td>
                     </tr>
                 }
+                else if (events.Count == 0)
+                {
+                    <tr>
+                        <td colspan="6">
+                            <div class="flex flex-col items-center justify-center">
+                                <dotlottie-player id="empty"
+                                    src="https://lottie.host/4433e2a1-52f0-4378-852c-d4f215d051a6/A3VkMg3Yh9.json"
+                                    background="transparent" speed="1" style="width: 300px; height: 300px;" loop autoplay
+                                    class="mx-auto"></dotlottie-player>
+                                <p>No events available</p>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    @for (int i = 0; i < events.Count; i++)
+                    {
+                        <tr>
+                            <td class="px-4 py-2.5">@events[i].Title</td>
+                            <td class="px-4 py-2.5">@events[i].Date.ToLongDateString()</td>
+                            <td class="px-4 py-2.5">@events[i].Description</td>
+                            <td class="px-4 py-2.5">@events[i].Location</td>
+                            <td class="px-4 py-2.5">
+                                <a href="" class="text-primary">Buy</a>
+                            </td>
+                        </tr>
+                    }
                 }
             </tbody>
         </table>

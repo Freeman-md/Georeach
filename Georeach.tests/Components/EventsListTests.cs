@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Georeach.Components;
 
 namespace Georeach.tests.Components;
@@ -33,7 +34,7 @@ public class EventsListTests : TestContext
     }
 
     [Fact]
-    public void EventsList_ShouldShowEmptyMessage_WhenNoEventsAreAvailable()
+    public void EventsList_ShouldShowLoadingIndicator_WhenDataIsFetching()
     {
         #region Arrange
         var component = RenderComponent<EventsList>();
@@ -46,7 +47,35 @@ public class EventsListTests : TestContext
         #endregion
 
         #region Assert
-        component.Markup.Contains("<em>Loading...</em>");
+        var loadingElement = component.Find("dotlottie-player");
+
+        Assert.NotNull(loadingElement);
+
+        var idValue = loadingElement.GetAttribute("id");
+        Assert.Equal("loading", idValue);
+        #endregion
+    }
+
+    [Fact]
+    public void EventsList_ShouldShowEmptyMessage_WhenNoEventsAvailable()
+    {
+        #region Arrange
+        var component = RenderComponent<EventsList>();
+        #endregion
+
+        #region Act
+        component.Instance.events = new List<Event>();
+
+        component.Render();
+        #endregion
+
+        #region Assert
+        var emptyElement = component.Find("dotlottie-player");
+
+        Assert.NotNull(emptyElement);
+
+        var idValue = emptyElement.GetAttribute("id");
+        Assert.Equal("empty", idValue);
         #endregion
     }
 }

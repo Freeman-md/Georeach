@@ -2,10 +2,10 @@ using Microsoft.AspNetCore.Components;
 
 namespace Georeach.Components;
 
+public record Event(string Title, DateTime Date, string Description, string Location);
+
 public class EventsListBase : ComponentBase
 {
-
-    public record Event(string Title, DateTime Date, string Description, string Location);
 
     public List<Event> events { get; set; }
 
