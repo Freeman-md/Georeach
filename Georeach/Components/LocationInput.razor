@@ -1,6 +1,28 @@
 <form>
     <div>
         <label for="location" class="mb-2 block">Enter location to get weather details: </label>
-        <input type="text" name="" id="" class="w-full p-2 rounded-lg border">
+        <input class="w-full p-2 rounded-lg border" value="@Location" @oninput="OnLocationChange" type="text">
+        <p>@Location</p>
     </div>
 </form>
+
+@code {
+    [Parameter, EditorRequired]
+
+    public string Location { get; set; } = string.Empty;
+    [Parameter]
+    public EventCallback<string> LocationChanged { get; set; }
+
+
+    private async Task OnLocationChange(ChangeEventArgs e)
+    {
+        string? newLocation = e.Value?.ToString();
+
+        if (newLocation == Location) return;
+
+        if (LocationChanged.HasDelegate)
+        {
+            await LocationChanged.InvokeAsync(newLocation);
+        }
+    }
+}
