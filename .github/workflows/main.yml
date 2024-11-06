@@ -1,0 +1,84 @@
+name: CI/CD for Georeach - Deploy Blazor and API to Azure
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '8.x'
+          include-prerelease: true
+
+      - name: Build with dotnet
+        run: dotnet build --configuration Release
+
+      - name: Test
+        run: dotnet test --no-restore --verbosity normal
+
+      - name: Publish API
+        run: dotnet publish GeoreachAPI/GeoreachAPI.csproj -c Release -o api_output
+
+      - name: Publish Blazor
+        run: dotnet publish Georeach/Georeach.csproj -c Release -o blazor_output
+
+      - name: Upload API artifact for deployment job
+        uses: actions/upload-artifact@v3
+        with:
+          name: api-app
+          path: api_output
+
+      - name: Upload Blazor artifact for deployment job
+        uses: actions/upload-artifact@v3
+        with:
+          name: blazor-app
+          path: blazor_output
+
+  deploy:
+    runs-on: windows-latest
+    needs: build
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Download API artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: api-app
+          path: api_output
+
+      - name: Download Blazor artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: blazor-app
+          path: blazor_output
+
+      # Deploy Blazor app to root
+      - name: Deploy Blazor app to Azure Web App root
+        id: deploy-blazor
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'Georeach'
+          slot-name: 'Production'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
+          package: blazor_output
+
+      # Deploy API to Azure Web App under '/api' path
+      - name: Deploy API to Azure Web App under '/api' path
+        id: deploy-api
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'Georeach'
+          slot-name: 'Production'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
+          package: api_output
