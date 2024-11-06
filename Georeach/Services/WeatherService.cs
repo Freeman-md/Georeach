@@ -1,4 +1,6 @@
 using System;
+using System.Net.Http.Json;
+using System.Text.Json;
 using Georeach.Interfaces.Services;
 using Georeach.Models;
 
@@ -8,11 +10,13 @@ public class WeatherService : IWeatherService
 {
     private readonly HttpClient _httpClient;
 
-    public WeatherService(IHttpClientFactory httpClientFactory) {
-        _httpClient = httpClientFactory.CreateClient("WeatherApiClient");
+    public WeatherService(HttpClient httpClient)
+    {
+        _httpClient = httpClient;
     }
 
-    public Task<Weather?> GetWeather(string location) {
-        throw new NotImplementedException();
+    public async Task<Weather?> GetWeather(string location)
+    {
+        return await _httpClient.GetFromJsonAsync<Weather>($"/weather?q={location}");
     }
 }

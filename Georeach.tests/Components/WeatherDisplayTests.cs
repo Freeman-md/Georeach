@@ -12,9 +12,9 @@ public class WeatherDisplayTests : TestContext
         #endregion
 
         #region Act
-            component.WaitForState(() => component.Instance.weatherData != null);
+            component.WaitForState(() => component.Instance.WeatherData != null);
 
-            var weatherData = component.Instance.weatherData;
+            var weatherData = component.Instance.WeatherData;
         #endregion
 
         #region Assert
@@ -49,9 +49,9 @@ public class WeatherDisplayTests : TestContext
         #endregion
 
         #region Act
-            component.Instance.weatherData = null;
+            component.Instance.WeatherData = null;
 
-            var weatherData = component.Instance.weatherData;
+            var weatherData = component.Instance.WeatherData;
         #endregion
 
         #region Assert

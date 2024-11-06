@@ -2,9 +2,13 @@
 @using Georeach.Components
 
 <div class="space-y-8">
-    <LocationInput />
+    <LocationInput @bind-Location="SetLocation" />
 
-    <WeatherDisplay />
+    <WeatherDisplay Location="SetLocation" />
 
     <EventsList />
 </div>
+
+@code {
+    private string SetLocation { get; set; }
+}

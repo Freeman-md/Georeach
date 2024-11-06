@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Georeach")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+90502f45403ef33f0728bc7ad42e4f6f7c0648ce")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3182b22200446dfd4852eebb1426bb247597a52d")]
 [assembly: System.Reflection.AssemblyProductAttribute("Georeach")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Georeach")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

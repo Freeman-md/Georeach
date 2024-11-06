@@ -1,9 +1,10 @@
 @attribute [StreamRendering]
+@inject IWeatherService WeatherService
 
 <section id="weather-display" class="space-y-6">
     <h2 class="text-3xl">Weather Summary for {location}</h2>
 
-    @if (weatherData == null)
+    @if (WeatherData == null)
     {
         <tr>
             <td colspan="6">
@@ -19,7 +20,7 @@
         <article class="grid grid-cols-2 lg:grid-cols-3 gap-4">
             <div id="temperature-container" class="border rounded-lg p-4 grid place-items-center text-center">
                 <img src="https://cdn.weatherapi.com/weather/64x64/day/113.png" alt="Sunny" class="w-20">
-                <h4 class="text-3xl font-bold" id="temperature-in-celsius">72&deg;F</h4>
+                <h4 class="text-3xl font-bold" id="temperature-in-celsius">@WeatherData.CurrentWeather.Temp_f &deg;F</h4>
                 <p class="text-gray-500">Sunny with light clouds</p>
             </div>
 
@@ -36,7 +37,7 @@
                         <path d="M4 12l12 0" />
                     </svg>
                     <p class="text-gray-500">Humidity</p>
-                    <h4 class="text-3xl font-bold" id="humidity-in-percentage">45%</h4>
+                    <h4 class="text-3xl font-bold" id="humidity-in-percentage">@WeatherData.CurrentWeather.humidity%</h4>
                 </div>
             </div>
 
@@ -51,11 +52,25 @@
                         <path d="M4 16h5.5a2.5 2.5 0 1 1 -2.34 3.24" />
                     </svg>
                     <p class="text-gray-500">Wind Speed</p>
-                    <h4 class="text-3xl font-bold" id="wind-speed-in-mph">5 mph</h4>
+                    <h4 class="text-3xl font-bold" id="wind-speed-in-mph">@WeatherData.CurrentWeather.Wind_mph mph</h4>
                     <p class="text-gray-500">Breezy conditions</p>
                 </div>
             </div>
         </article>
-
     }
+
 </section>
+
+@code {
+
+    [Parameter]
+    public required string Location { get; set; }
+    public Weather? WeatherData { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!string.IsNullOrEmpty(Location)) {
+            WeatherData = await WeatherService.GetWeather(Location);
+        }
+    }
+}

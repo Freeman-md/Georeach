@@ -1,18 +1,13 @@
-using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Net.Http;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
-using Georeach.Models;
-using Georeach.Services;
-using Georeach.tests.Builders;
+using GeoreachAPI.Models;
+using GeoreachAPI.Services;
+using GeoreachAPI.tests.Builders;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using Moq.Protected;
 
-namespace Georeach.tests.Services;
+namespace GeoreachAPI.tests.Services;
 
 public class WeatherServiceTests
 {
@@ -24,7 +19,8 @@ public class WeatherServiceTests
         _httpClientFactoryMock = new Mock<IHttpClientFactory>();
 
         var inMemorySettings = new Dictionary<string, string>{
-            { "ApiURL", "http://localhost:5299" },
+            { "WeatherApi:ApiKey", "test-api-key" },
+            { "WeatherApi:BaseUrl", "https://api.weather.com" },
         };
 
         _configuration = new ConfigurationBuilder()
@@ -50,7 +46,7 @@ public class WeatherServiceTests
 
         return new HttpClient(messageHandlerMock.Object)
         {
-            BaseAddress = new Uri(_configuration["ApiUrl"])
+            BaseAddress = new Uri(_configuration["WeatherApi:BaseUrl"])
         };
     }
 
@@ -58,7 +54,7 @@ public class WeatherServiceTests
     {
         var client = CreateMockHttpClient(HttpStatusCode.OK, jsonResponse);
 
-        return new WeatherService(client);
+        return new WeatherService(client, _configuration);
     }
 
     [Fact]
@@ -77,8 +73,21 @@ public class WeatherServiceTests
 
         #region Assert
         Assert.NotNull(result);
-        Assert.Equal(expectedWeather.CurrentWeather.Temp_c, result.CurrentWeather.Temp_c);
+        Assert.Equal(expectedWeather.Current.Temp_c, result.Current.Temp_c);
         Assert.Equal(expectedWeather.Location.Country, result.Location.Country);
+        #endregion
+    }
+
+    [Fact]
+    public async Task GetWeather_ShouldThrowArgumentException_WhenLocationIsNullOrEmpty()
+    {
+        #region Arrange
+        var weatherService = CreateWeatherService("{}");
+        #endregion
+
+        #region Act & Assert
+        await Assert.ThrowsAsync<ArgumentException>(() => weatherService.GetWeather(""));
+        await Assert.ThrowsAsync<ArgumentException>(() => weatherService.GetWeather(null!));
         #endregion
     }
 }
