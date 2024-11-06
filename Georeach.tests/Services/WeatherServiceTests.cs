@@ -77,7 +77,7 @@ public class WeatherServiceTests
 
         #region Assert
         Assert.NotNull(result);
-        Assert.Equal(expectedWeather.CurrentWeather.Temp_c, result.CurrentWeather.Temp_c);
+        Assert.Equal(expectedWeather.Current.Temp_c, result.Current.Temp_c);
         Assert.Equal(expectedWeather.Location.Country, result.Location.Country);
         #endregion
     }

@@ -44,7 +44,7 @@ public class LocationInputTests : TestContext
 
         #region Act
         var inputElement = component.Find("input");
-        await inputElement.InputAsync(new ChangeEventArgs()
+        await inputElement.ChangeAsync(new ChangeEventArgs()
         {
             Value = newLocation
         });
@@ -72,7 +72,7 @@ public class LocationInputTests : TestContext
 
         #region Act
             var inputElement = component.Find("input");
-            await inputElement.InputAsync(new ChangeEventArgs() {
+            await inputElement.ChangeAsync(new ChangeEventArgs() {
                 Value = initialLocation
             });
         #endregion
