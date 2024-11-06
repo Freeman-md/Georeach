@@ -1,68 +1,80 @@
 using System;
+using System.Threading.Tasks;
 using Georeach.Components;
+using Georeach.Interfaces.Services;
+using Georeach.Models;
+using Georeach.tests.Builders;
+using Moq;
 
 namespace Georeach.tests.Components;
 
 public class WeatherDisplayTests : TestContext
 {
+    private readonly Mock<IWeatherService> _weatherServiceMock;
+    private readonly Weather _mockWeatherData;
+
+    public WeatherDisplayTests()
+    {
+        _weatherServiceMock = new Mock<IWeatherService>();
+
+        // Mock weather data
+        _mockWeatherData = new WeatherBuilder().Build();
+
+        // Register the mock service
+        Services.AddSingleton<IWeatherService>(_weatherServiceMock.Object);
+    }
+
     [Fact]
-    public void WeatherDisplay_ShouldRenderData_WhenWeatherIsAvailable() {
+    public void WeatherDisplay_ShouldRenderData_WhenWeatherIsAvailable()
+    {
         #region Arrange
-            var component = RenderComponent<WeatherDisplay>();
+        _weatherServiceMock.Setup(s => s.GetWeather(It.IsAny<string>())).ReturnsAsync(_mockWeatherData);
+        var component = RenderComponent<WeatherDisplay>(parameters => parameters.Add(p => p.Location, "Paris"));
         #endregion
 
         #region Act
-            component.WaitForState(() => component.Instance.WeatherData != null);
-
-            var weatherData = component.Instance.WeatherData;
+        component.WaitForState(() => component.Instance.WeatherData != null);
         #endregion
 
         #region Assert
-            Assert.NotNull(weatherData);
+        var temperatureContainer = component.Find("div#temperature-container");
+        var humidityContainer = component.Find("div#humidity-container");
+        var windSpeedContainer = component.Find("div#wind-speed-container");
 
-            var temperatureContainer = component.Find("div#temperature-container");
-            var humidityContainer = component.Find("div#humidity-container");
-            var windSpeedContainer = component.Find("div#wind-speed-container");
+        var temperatureElement = temperatureContainer.QuerySelector("#temperature-in-celsius");
+        var humidityElement = humidityContainer.QuerySelector("#humidity-in-percentage");
+        var windSpeedElement = windSpeedContainer.QuerySelector("#wind-speed-in-mph");
 
-            var temperatureElement = temperatureContainer.QuerySelector("#temperature-in-celsius");
-            var humidityElement = humidityContainer.QuerySelector("#humidity-in-percentage");
-            var windSpeedElement = windSpeedContainer.QuerySelector("#wind-speed-in-mph");
+        Assert.NotNull(temperatureContainer);
+        Assert.NotNull(humidityContainer);
+        Assert.NotNull(windSpeedContainer);
 
-            Assert.NotNull(temperatureContainer);
-            Assert.NotNull(humidityContainer);
-            Assert.NotNull(windSpeedContainer);
+        Assert.NotNull(temperatureElement);
+        Assert.NotNull(humidityElement);
+        Assert.NotNull(windSpeedElement);
 
-            Assert.NotNull(temperatureElement);
-            Assert.NotNull(humidityElement);
-            Assert.NotNull(windSpeedElement);
-
-            Assert.False(string.IsNullOrWhiteSpace(temperatureElement.TextContent.Trim()));
-            Assert.False(string.IsNullOrWhiteSpace(humidityElement.TextContent.Trim()));
-            Assert.False(string.IsNullOrWhiteSpace(windSpeedElement.TextContent.Trim()));
+        Assert.False(string.IsNullOrWhiteSpace(temperatureElement.TextContent.Trim()));
+        Assert.False(string.IsNullOrWhiteSpace(humidityElement.TextContent.Trim()));
+        Assert.False(string.IsNullOrWhiteSpace(windSpeedElement.TextContent.Trim()));
         #endregion
     }
 
     [Fact]
-    public void WeatherDisplay_ShouldLoadingIndicator_WhenDataIsFetching() {
+    public void WeatherDisplay_ShouldShowLoadingIndicator_WhenDataIsFetching()
+    {
         #region Arrange
-            var component = RenderComponent<WeatherDisplay>();
+        _weatherServiceMock.Setup(s => s.GetWeather(It.IsAny<string>())).ReturnsAsync((Weather)null);
+        var component = RenderComponent<WeatherDisplay>(parameters => parameters.Add(p => p.Location, "Paris"));
         #endregion
 
         #region Act
-            component.Instance.WeatherData = null;
-
-            var weatherData = component.Instance.WeatherData;
+        component.WaitForState(() => component.Instance.WeatherData == null);
         #endregion
 
         #region Assert
-            Assert.Null(weatherData);
-
-            var loadingElement = component.Find("dotlottie-player#loading");
-
-            Assert.NotNull(loadingElement);
-
-            var idValue = loadingElement.GetAttribute("id");
-            Assert.Equal("loading", idValue);
+        var loadingElement = component.Find("dotlottie-player#loading");
+        Assert.NotNull(loadingElement);
+        Assert.Equal("loading", loadingElement.GetAttribute("id"));
         #endregion
     }
 }
