@@ -72,6 +72,7 @@ jobs:
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
           package: blazor_output
+          target-path: '/site/wwwroot'
 
       # Deploy API to Azure Web App under '/api' path
       - name: Deploy API to Azure Web App under '/api' path
@@ -82,3 +83,4 @@ jobs:
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
           package: api_output
+          target-path: '/site/wwwroot/api'
