@@ -10,12 +10,14 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<IWeatherService, WeatherService>();
 
+var blazorClientUrl = builder.Configuration["BlazorClientUrl"] ?? "https://localhost:5267";
+
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowBlazorClient", builder =>
     {
-        builder.WithOrigins("http://localhost:5267") // replace with env variable
+        builder.WithOrigins(blazorClientUrl) // replace with env variable
                .AllowAnyMethod()
                .AllowAnyHeader();
     });
