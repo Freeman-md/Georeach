@@ -17,6 +17,6 @@ public class WeatherService : IWeatherService
 
     public async Task<Weather?> GetWeather(string location)
     {
-        return await _httpClient.GetFromJsonAsync<Weather>($"/weather?q={location}");
+        return await _httpClient.GetFromJsonAsync<Weather>($"weather?location={location}");
     }
 }

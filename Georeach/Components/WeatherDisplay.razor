@@ -2,7 +2,7 @@
 @inject IWeatherService WeatherService
 
 <section id="weather-display" class="space-y-6">
-    <h2 class="text-3xl">Weather Summary for {location}</h2>
+    <h2 class="text-3xl">Weather Summary for @Location</h2>
 
     @if (WeatherData == null)
     {
@@ -70,6 +70,7 @@
     protected override async Task OnParametersSetAsync()
     {
         if (!string.IsNullOrEmpty(Location)) {
+            Console.WriteLine(Location);
             WeatherData = await WeatherService.GetWeather(Location);
         }
     }
